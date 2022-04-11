@@ -1,12 +1,12 @@
 package main
 
 import (
+	"ThinkGOChat/gateservice"
 	"ThinkGOChat/thinkutils/logger"
+	"ThinkGOChat/usercenter"
+	"ThinkGOChat/worldservice"
 	"fmt"
 	"github.com/lonng/nano"
-	"github.com/lonng/nano/examples/cluster/chat"
-	"github.com/lonng/nano/examples/cluster/gate"
-	"github.com/lonng/nano/examples/cluster/master"
 	"github.com/lonng/nano/serialize/json"
 	"github.com/lonng/nano/session"
 	"github.com/urfave/cli"
@@ -31,9 +31,11 @@ func runRegisterCenter(args *cli.Context) error {
 	szListen := fmt.Sprintf("127.0.0.1:%d", cfg.Section("register-center").Key("port").MustInt())
 	log.Info("Listen for %s", szListen)
 
+	session.Lifetime.OnClosed(usercenter.OnSessionClosed)
+
 	nano.Listen(szListen,
 		nano.WithMaster(),
-		nano.WithComponents(master.Services),
+		nano.WithComponents(usercenter.Services),
 		nano.WithSerializer(json.NewSerializer()),
 		nano.WithDebugMode(),
 	)
@@ -61,7 +63,7 @@ func runGate(args *cli.Context) error {
 	nano.Listen(szListen,
 		nano.WithAdvertiseAddr(szRegisterCenter),
 		nano.WithClientAddr(szGate),
-		nano.WithComponents(gate.Services),
+		nano.WithComponents(gateservice.Services),
 		nano.WithSerializer(json.NewSerializer()),
 		nano.WithIsWebsocket(true),
 		nano.WithWSPath("/nano"),
@@ -73,12 +75,7 @@ func runGate(args *cli.Context) error {
 }
 
 func runWorld(args *cli.Context) error {
-
-	return nil
-}
-
-func runChat(args *cli.Context) error {
-	log.Info("Run Chat Server")
+	log.Info("Run World Server")
 
 	cfg, err := ini.Load("app.ini")
 	if err != nil {
@@ -88,18 +85,24 @@ func runChat(args *cli.Context) error {
 	szRegisterCenter := fmt.Sprintf("%s:%d", cfg.Section("register-center").Key("host").String(), cfg.Section("register-center").Key("port").MustInt())
 	log.Info("Register Center addr: %s", szRegisterCenter)
 
-	szListen := fmt.Sprintf("127.0.0.1:%d", cfg.Section("room-server").Key("port").MustInt())
+	szListen := fmt.Sprintf("127.0.0.1:%d", cfg.Section("world-server").Key("port").MustInt())
 	log.Info("Listen for %s", szListen)
 
-	session.Lifetime.OnClosed(chat.OnSessionClosed)
+	session.Lifetime.OnClosed(worldservice.OnSessionClosed)
 
 	// Startup Nano server with the specified listen address
 	nano.Listen(szListen,
 		nano.WithAdvertiseAddr(szRegisterCenter),
-		nano.WithComponents(chat.Services),
+		nano.WithComponents(worldservice.Services),
 		nano.WithSerializer(json.NewSerializer()),
 		nano.WithDebugMode(),
 	)
+
+	return nil
+}
+
+func runChat(args *cli.Context) error {
+
 
 	return nil
 }

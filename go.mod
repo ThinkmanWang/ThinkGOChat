@@ -13,13 +13,13 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/ecofast/rtl v0.0.0-20200709123611-d8ced2238cab // indirect
 	github.com/ecofast/tcpsock v0.0.0-20180305073918-520f2b697dff // indirect
-	github.com/emirpasic/gods v1.12.0 // indirect
+	github.com/emirpasic/gods v1.12.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.7.7 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
-	github.com/go-redis/redis/v8 v8.11.4 // indirect
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
@@ -27,7 +27,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
-	github.com/klauspost/compress v1.9.8 // indirect
+	github.com/klauspost/compress v1.14.2 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/levigross/grequests v0.0.0-20190908174114-253788527a1a // indirect
 	github.com/lonng/nano v0.5.0 // indirect
@@ -36,11 +36,12 @@ require (
 	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
 	github.com/panjf2000/ants v1.3.0 // indirect
 	github.com/pierrec/lz4 v2.6.0+incompatible // indirect
+	github.com/pierrec/lz4/v4 v4.1.14 // indirect
 	github.com/pingcap/check v0.0.0-20211026125417-57bd13f7b5f0 // indirect
 	github.com/pingcap/errors v0.11.4 // indirect
 	github.com/pingcap/log v0.0.0-20211215031037-e024ba4eb0ee // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/segmentio/kafka-go v0.4.25 // indirect
+	github.com/segmentio/kafka-go v0.4.31 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	github.com/urfave/cli v1.22.5 // indirect
