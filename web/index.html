@@ -11,7 +11,6 @@
     </ul>
     <div class="controls">
         <input type="text" v-model="nickname">
-        <input type="text" v-model="balance">
         <input type="text" v-model="inputMessage">
         <input type="button" v-on:click="sendMessage" value="Send">
     </div>
@@ -28,7 +27,6 @@
             nickname: nickname,
             inputMessage:'',
             messages: [],
-            balance: 1000,
         },
         methods: {
             sendMessage: function () {
@@ -47,11 +45,6 @@
     var onNewUser = function (data) {
         console.log(data);
         v.messages.push({name:'system', content:data.content});
-    };
-
-    var onBalance = function (data) {
-        console.log(data);
-        v.balance = data.currentBalance;
     };
 
     var onMembers = function (data) {
@@ -77,7 +70,6 @@
         console.log("initialized");
         starx.on("onNewUser", onNewUser);
         starx.on("onMembers", onMembers);
-        starx.on("onBalance", onBalance);
         starx.request("GateService.Login", {"nickname": nickname}, login);
     })
 </script>
