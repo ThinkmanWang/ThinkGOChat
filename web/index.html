@@ -56,7 +56,9 @@
 
     var onMembers = function (data) {
         console.log(data);
-        v.messages.push({name:'system', content: "members: "+data.members});
+        for (var i = 0; i < data.members.length; ++i) {
+            v.messages.push({name:'system', content: "members: " + data.members[i].name});
+        }
     };
 
 

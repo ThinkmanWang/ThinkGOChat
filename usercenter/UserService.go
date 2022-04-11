@@ -10,9 +10,9 @@ import (
 
 type User struct {
 	session  *session.Session `json:"-"`
-	name string `json:"name"`
-	gateId   int64 `json:"-"`
-	masterId int64 `json:"-"`
+	Name string `json:"name"`
+	GateId   int64 `json:"-"`
+	MasterId int64 `json:"-"`
 }
 
 type UserService struct {
@@ -51,9 +51,9 @@ func (this *UserService) NewUser(s *session.Session, msg *myprotocol.NewUserRequ
 
 	user := &User{
 		session:  s,
-		name: msg.Nickname,
-		gateId:   msg.GateUid,
-		masterId: uid,
+		Name: msg.Nickname,
+		GateId:   msg.GateUid,
+		MasterId: uid,
 	}
 	this.users[uid] = user
 
