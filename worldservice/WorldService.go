@@ -36,12 +36,12 @@ func (this *WorldService) JoinRoom(s *session.Session, msg *protocol.JoinRoomReq
 	return this.group.Add(s)
 }
 
-type SyncMessage struct {
+type SendMessage struct {
 	Name    string `json:"name"`
 	Content string `json:"content"`
 }
 
-func (this *WorldService) SyncMessage(s *session.Session, msg *SyncMessage) error {
+func (this *WorldService) SendMessage(s *session.Session, msg *SendMessage) error {
 	// Send an RPC to master server to stats
 	//if err := s.RPC("TopicService.Stats", &protocol.MasterStats{Uid: s.UID()}); err != nil {
 	//	return errors.Trace(err)

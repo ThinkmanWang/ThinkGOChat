@@ -31,7 +31,7 @@
         methods: {
             sendMessage: function () {
                 console.log(this.inputMessage);
-                starx.notify('WorldService.SyncMessage', {name: this.nickname, content: this.inputMessage});
+                starx.notify('WorldService.SendMessage', {name: this.nickname, content: this.inputMessage});
                 this.inputMessage = '';
             }
         }
