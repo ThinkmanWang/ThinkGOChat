@@ -1,4 +1,4 @@
-package worldservice
+package roomservice
 
 import (
 	"ThinkGOChat/thinkutils/logger"
@@ -10,14 +10,15 @@ var (
 	// All services in master server
 	Services = &component.Components{}
 
-	worldService = newWorldService()
+	roomService = newRoomService()
+
 	log *logger.LocalLogger = logger.DefaultLogger()
 )
 
 func init() {
-	Services.Register(worldService)
+	Services.Register(roomService)
 }
 
 func OnSessionClosed(s *session.Session) {
-	worldService.userDisconnected(s)
+	roomService.userDisconnected(s)
 }

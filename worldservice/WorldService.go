@@ -1,13 +1,12 @@
 package worldservice
 
 import (
+	"ThinkGOChat/myprotocol"
 	"fmt"
 	"github.com/lonng/nano"
 	"github.com/lonng/nano/component"
-	"github.com/lonng/nano/examples/cluster/protocol"
 	"github.com/lonng/nano/session"
 	"github.com/pingcap/errors"
-	"log"
 )
 
 type WorldService struct {
@@ -21,13 +20,14 @@ func newWorldService() *WorldService {
 	}
 }
 
-func (this *WorldService) JoinRoom(s *session.Session, msg *protocol.JoinRoomRequest) error {
-	log.Println("JoinRoom")
+func (this *WorldService) JoinRoom(s *session.Session, msg *myprotocol.JoinWorldRequest) error {
+
+	log.Info("JoinRoom uid: %d", s.ID())
 	if err := s.Bind(msg.MasterUid); err != nil {
 		return errors.Trace(err)
 	}
 
-	broadcast := &protocol.NewUserBroadcast{
+	broadcast := &myprotocol.NewUserBroadcast{
 		Content: fmt.Sprintf("User user join: %v", msg.Nickname),
 	}
 	if err := this.group.Broadcast("onNewUser", broadcast); err != nil {
@@ -53,8 +53,8 @@ func (this *WorldService) SendMessage(s *session.Session, msg *SendMessage) erro
 
 func (this *WorldService) userDisconnected(s *session.Session) {
 	if err := this.group.Leave(s); err != nil {
-		log.Println("Remove user from group failed", s.UID(), err)
+		log.Info("Remove user from group failed", s.UID(), err)
 		return
 	}
-	log.Println("User session disconnected", s.UID())
+	log.Info("User session disconnected", s.UID())
 }

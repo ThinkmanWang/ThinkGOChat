@@ -2,6 +2,7 @@ package main
 
 import (
 	"ThinkGOChat/gateservice"
+	"ThinkGOChat/roomservice"
 	"ThinkGOChat/thinkutils/logger"
 	"ThinkGOChat/usercenter"
 	"ThinkGOChat/worldservice"
@@ -101,8 +102,29 @@ func runWorld(args *cli.Context) error {
 	return nil
 }
 
-func runChat(args *cli.Context) error {
+func runRoom(args *cli.Context) error {
+	log.Info("Run Room Server")
 
+	cfg, err := ini.Load("app.ini")
+	if err != nil {
+		return nil
+	}
+
+	szRegisterCenter := fmt.Sprintf("%s:%d", cfg.Section("register-center").Key("host").String(), cfg.Section("register-center").Key("port").MustInt())
+	log.Info("Register Center addr: %s", szRegisterCenter)
+
+	szListen := fmt.Sprintf("127.0.0.1:%d", cfg.Section("room-server").Key("port").MustInt())
+	log.Info("Listen for %s", szListen)
+
+	session.Lifetime.OnClosed(roomservice.OnSessionClosed)
+
+	// Startup Nano server with the specified listen address
+	nano.Listen(szListen,
+		nano.WithAdvertiseAddr(szRegisterCenter),
+		nano.WithComponents(roomservice.Services),
+		nano.WithSerializer(json.NewSerializer()),
+		nano.WithDebugMode(),
+	)
 
 	return nil
 }
@@ -133,7 +155,7 @@ func main() {
 		},
 		{
 			Name: "room-server",
-			Action: runChat,
+			Action: runRoom,
 		},
 	}
 

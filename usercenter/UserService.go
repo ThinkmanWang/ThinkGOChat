@@ -12,7 +12,7 @@ type User struct {
 	session  *session.Session `json:"-"`
 	Name string `json:"name"`
 	GateId   int64 `json:"-"`
-	MasterId int64 `json:"-"`
+	Id int64 `json:"id"`
 }
 
 type UserService struct {
@@ -32,6 +32,7 @@ type ExistsMembersResponse struct {
 }
 
 func (this *UserService) NewUser(s *session.Session, msg *myprotocol.NewUserRequest) error {
+	log.Info("%d", s.ID())
 	log.Info(thinkutils.JSONUtils.ToJson(msg))
 
 	this.nextUid++
@@ -53,7 +54,7 @@ func (this *UserService) NewUser(s *session.Session, msg *myprotocol.NewUserRequ
 		session:  s,
 		Name: msg.Nickname,
 		GateId:   msg.GateUid,
-		MasterId: uid,
+		Id: uid,
 	}
 	this.users[uid] = user
 

@@ -1,5 +1,9 @@
 package myprotocol
 
+type NewUserBroadcast struct {
+	Content string `json:"content"`
+}
+
 type NewUserRequest struct {
 	Nickname string `json:"nickname"`
 	GateUid  int64  `json:"gateUid"`
@@ -13,4 +17,31 @@ type JoinWorldRequest struct {
 
 type MasterStats struct {
 	Uid int64 `json:"uid"`
+}
+
+type CreateRoomReq struct {
+	Name string `json:"name"`
+}
+
+type User struct {
+	Id int64 `json:"id"`
+	Name string `json:"name"`
+}
+
+type RoomInfo struct {
+	Id int64 `json:"id"`
+	Name string `json:"name"`
+	Members []*User `json:"members"`
+}
+
+type JoinRoomReq struct {
+	RoomId int64 `json:"roomId"`
+}
+
+func NewRoomInfo() *RoomInfo {
+	pRoom := &RoomInfo{
+		Members: []*User{},
+	}
+
+	return pRoom
 }
