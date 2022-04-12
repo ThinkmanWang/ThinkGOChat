@@ -22,6 +22,6 @@ func init() {
 }
 
 func OnSessionClosed(s *session.Session) {
-	userService.userDisconnected(s)
+	userService.OnDisconnected(s)
 }
 

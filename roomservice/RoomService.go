@@ -77,10 +77,10 @@ func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomRe
 	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
 }
 
-func (this *RoomService) userDisconnected(s *session.Session) {
-	//if err := this.group.Leave(s); err != nil {
-	//	log.Println("Remove user from group failed", s.UID(), err)
-	//	return
-	//}
-	//log.Println("User session disconnected", s.UID())
+func (this *RoomService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
+	return nil
+}
+
+func (this *RoomService) OnDisconnected(s *session.Session) {
+
 }

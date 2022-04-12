@@ -19,5 +19,5 @@ func init() {
 }
 
 func OnSessionClosed(s *session.Session) {
-	worldService.userDisconnected(s)
+	worldService.OnDisconnected(s)
 }

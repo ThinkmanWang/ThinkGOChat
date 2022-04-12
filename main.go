@@ -61,6 +61,8 @@ func runGate(args *cli.Context) error {
 	szGate := fmt.Sprintf("127.0.0.1:%d", cfg.Section("gate-server").Key("gate-port").MustInt())
 	log.Info("Websocket addr %s", szGate)
 
+	session.Lifetime.OnClosed(gateservice.OnSessionClosed)
+
 	nano.Listen(szListen,
 		nano.WithAdvertiseAddr(szRegisterCenter),
 		nano.WithClientAddr(szGate),

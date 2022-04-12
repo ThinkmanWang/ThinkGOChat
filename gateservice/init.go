@@ -3,6 +3,7 @@ package gateservice
 import (
 	"ThinkGOChat/thinkutils/logger"
 	"github.com/lonng/nano/component"
+	"github.com/lonng/nano/session"
 )
 
 var (
@@ -16,4 +17,8 @@ var (
 
 func init() {
 	Services.Register(gateService)
+}
+
+func OnSessionClosed(s *session.Session) {
+	gateService.OnDisconnected(s)
 }

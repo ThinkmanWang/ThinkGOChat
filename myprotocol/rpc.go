@@ -1,12 +1,19 @@
 package myprotocol
 
+import "github.com/lonng/nano/session"
+
 type NewUserBroadcast struct {
 	Content string `json:"content"`
 }
 
 type NewUserRequest struct {
 	Nickname string `json:"nickname"`
-	GateUid  int64  `json:"gateUid"`
+	OpenId string `json:"openId"`
+}
+
+type BaseService interface {
+	OnConnected(s *session.Session, msg *NewUserRequest) error
+	OnDisconnected(s *session.Session)
 }
 
 type JoinWorldRequest struct {

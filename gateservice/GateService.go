@@ -1,9 +1,9 @@
 package gateservice
 
 import (
+	"ThinkGOChat/myprotocol"
 	"ThinkGOChat/thinkutils"
 	"github.com/lonng/nano/component"
-	"github.com/lonng/nano/examples/cluster/protocol"
 	"github.com/lonng/nano/session"
 	"github.com/pingcap/errors"
 )
@@ -21,26 +21,39 @@ type (
 	LoginRequest struct {
 		Nickname string `json:"nickname"`
 	}
-	LoginResponse struct {
-		Code int `json:"code"`
-	}
 )
 
 func (this *GateService) Login(s *session.Session, msg *LoginRequest) error {
 	log.Info(thinkutils.JSONUtils.ToJson(msg))
 
-	this.nextGateUid++
-	uid := this.nextGateUid
-	request := &protocol.NewUserRequest{
+	request := &myprotocol.NewUserRequest{
 		Nickname: msg.Nickname,
-		GateUid:  uid,
+		OpenId: thinkutils.UUIDUtils.New(),
 	}
-	if err := s.RPC("UserService.NewUser", request); err != nil {
+
+	if err := s.RPC("UserService.OnConnected", request); err != nil {
 		return errors.Trace(err)
 	}
-	return s.Response(&LoginResponse{})
+
+	if err := s.RPC("WorldService.OnConnected", request); err != nil {
+		return errors.Trace(err)
+	}
+
+	if err := s.RPC("RoomService.OnConnected", request); err != nil {
+		return errors.Trace(err)
+	}
+
+	return s.Response(thinkutils.AjaxResultSuccess())
 }
 
 func (this *GateService) BindChatServer(s *session.Session, msg []byte) error {
 	return errors.Errorf("not implement")
+}
+
+func (this *GateService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
+	return nil
+}
+
+func (this *GateService) OnDisconnected(s *session.Session) {
+
 }
