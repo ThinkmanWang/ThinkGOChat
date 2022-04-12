@@ -51,7 +51,7 @@ func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRo
 	pRoonInfo.Id = rid
 	pRoonInfo.Name = msg.Name
 	pRoonInfo.Members = append(pRoonInfo.Members, &myprotocol.User{
-		Id: s.ID(),
+		OpenId: s.String("openId"),
 	})
 
 	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
@@ -69,9 +69,11 @@ func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomRe
 	pRoonInfo.Name = this.Rooms[msg.RoomId].Name
 	lstMember := this.Rooms[msg.RoomId].Members()
 	for i := 0; i < this.Rooms[msg.RoomId].Count(); i++ {
-		pRoonInfo.Members = append(pRoonInfo.Members, &myprotocol.User{
-			Id: lstMember[i],
-		})
+		if session, err := this.Rooms[msg.RoomId].Member(lstMember[i]); err == nil {
+			pRoonInfo.Members = append(pRoonInfo.Members, &myprotocol.User{
+				OpenId: session.String("openId"),
+			})
+		}
 	}
 
 	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))

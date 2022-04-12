@@ -31,7 +31,7 @@ type CreateRoomReq struct {
 }
 
 type User struct {
-	Id int64 `json:"id"`
+	OpenId string `json:"openId"`
 	Name string `json:"name"`
 }
 
