@@ -43,7 +43,9 @@ func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRo
 		CreateTime: thinkutils.DateTime.TimestampMs(),
 		Group: *nano.NewGroup(msg.Name),
 	}
-	pNewRoom.Add(s)
+	if err := pNewRoom.Add(s); err != nil {
+		return err
+	}
 
 	this.Rooms[rid] = pNewRoom
 
