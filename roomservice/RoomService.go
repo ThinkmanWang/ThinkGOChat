@@ -31,7 +31,7 @@ func newRoomService() *RoomService {
 }
 
 func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRoomReq) error {
-	log.Info("create room %s", msg.Name)
+	log.Info("%s call CreateRoom", s.String("openId"))
 
 	this.nextRoomId++
 	rid := this.nextRoomId
@@ -78,6 +78,8 @@ func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomRe
 }
 
 func (this *RoomService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
+	s.Set("openId", msg.OpenId)
+	log.Info("%p %s OnConnected", s, msg.OpenId)
 	return nil
 }
 

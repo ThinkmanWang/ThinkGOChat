@@ -26,12 +26,7 @@ type SendMessage struct {
 }
 
 func (this *WorldService) SendMessage(s *session.Session, msg *SendMessage) error {
-	// Send an RPC to master server to stats
-	//if err := s.RPC("TopicService.Stats", &protocol.MasterStats{Uid: s.UID()}); err != nil {
-	//	return errors.Trace(err)
-	//}
-
-	// Sync message to all members in this room
+	log.Info("%p %s call SendMessage", s, s.String("openId"))
 	return this.group.Broadcast("onMessage", msg)
 }
 
@@ -51,8 +46,8 @@ func (this *WorldService) NewUser(s *session.Session, msg *myprotocol.NewUserReq
 }
 
 func (this *WorldService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
-	log.Info("JoinRoom uid: %d", s.ID())
-	s.Set("openid", msg.OpenId)
+	log.Info("%p %s JoinRoom", s, msg.OpenId)
+	s.Set("openId", msg.OpenId)
 
 	broadcast := &myprotocol.NewUserBroadcast{
 		Content: fmt.Sprintf("User user join: %v", msg.Nickname),

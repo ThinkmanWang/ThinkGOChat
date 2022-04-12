@@ -10,7 +10,6 @@ import (
 
 type GateService struct {
 	component.Base
-	nextGateUid int64
 }
 
 func newGateService() *GateService {
@@ -26,9 +25,10 @@ type (
 func (this *GateService) Login(s *session.Session, msg *LoginRequest) error {
 	log.Info(thinkutils.JSONUtils.ToJson(msg))
 
+	szOpenId := thinkutils.UUIDUtils.New()
 	request := &myprotocol.NewUserRequest{
 		Nickname: msg.Nickname,
-		OpenId: thinkutils.UUIDUtils.New(),
+		OpenId: szOpenId,
 	}
 
 	if err := s.RPC("UserService.OnConnected", request); err != nil {
