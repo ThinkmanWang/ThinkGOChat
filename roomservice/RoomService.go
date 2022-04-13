@@ -119,3 +119,9 @@ func (this *RoomService) RoomList(s *session.Session, msg *myprotocol.EmptyReq) 
 
 	return s.Response(thinkutils.AjaxResultSuccessWithData(lstRoom))
 }
+
+func (this *RoomService) SendMessage(s *session.Session, msg *myprotocol.RoomMessage) error {
+	log.Info("%p %s call SendMessage", s, s.String("openId"))
+	msg.OpenId = s.String("openId")
+	return this.Rooms[msg.RoomId].Broadcast("onMessage", msg)
+}

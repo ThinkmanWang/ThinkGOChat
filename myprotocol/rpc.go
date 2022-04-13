@@ -56,3 +56,10 @@ func NewRoomInfo() *RoomInfo {
 
 	return pRoom
 }
+
+type RoomMessage struct {
+	OpenId string `json:"openId"`
+	RoomId int64 `json:"roomId"`
+	Name    string `json:"name"`
+	Content string `json:"content"`
+}
