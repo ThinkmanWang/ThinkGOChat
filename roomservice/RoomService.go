@@ -14,7 +14,6 @@ type RoomService struct {
 
 	Rooms map[int64]*Room
 	AllUser *nano.Group
-	//Rooms []*Room
 }
 
 type Room struct {
@@ -30,6 +29,19 @@ func newRoomService() *RoomService {
 		Rooms: map[int64]*Room{},
 		AllUser: nano.NewGroup("all-users"),
 	}
+}
+
+func (this *RoomService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
+	s.Set("openId", msg.OpenId)
+	if err := this.AllUser.Add(s); err != nil {
+	}
+
+	log.Info("%p %s OnConnected", s, msg.OpenId)
+	return nil
+}
+
+func (this *RoomService) OnDisconnected(s *session.Session) {
+
 }
 
 func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRoomReq) error {
@@ -67,36 +79,43 @@ func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRo
 }
 
 func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomReq) error {
+	log.Info("%s join room %d", s.String("openId"), msg.RoomId)
 	err := this.Rooms[msg.RoomId].Add(s)
 	if err != nil {
 		_ = s.Response(thinkutils.AjaxResultError())
 		return nil
 	}
 
+	pRoonInfo := this.createRoomInfo(this.Rooms[msg.RoomId])
+
+	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
+}
+
+func (this *RoomService) createRoomInfo(pRoom *Room) *myprotocol.RoomInfo {
 	pRoonInfo := myprotocol.NewRoomInfo()
-	pRoonInfo.Id = msg.RoomId
-	pRoonInfo.Name = this.Rooms[msg.RoomId].Name
-	lstMember := this.Rooms[msg.RoomId].Members()
-	for i := 0; i < this.Rooms[msg.RoomId].Count(); i++ {
-		if session, err := this.Rooms[msg.RoomId].Member(lstMember[i]); err == nil {
+	pRoonInfo.Id = pRoom.Id
+	pRoonInfo.Name = pRoom.Name
+	pRoonInfo.OwnerId = pRoom.Owner.String("openId")
+
+	lstMember := pRoom.Members()
+	for i := 0; i < pRoom.Count(); i++ {
+		if session, err := pRoom.Member(lstMember[i]); err == nil {
 			pRoonInfo.Members = append(pRoonInfo.Members, &myprotocol.User{
 				OpenId: session.String("openId"),
 			})
 		}
 	}
 
-	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
+	return pRoonInfo
 }
 
-func (this *RoomService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
-	s.Set("openId", msg.OpenId)
-	if err := this.AllUser.Add(s); err != nil {
+func (this *RoomService) RoomList(s *session.Session, msg *myprotocol.EmptyReq) error {
+	lstRoom := make([]*myprotocol.RoomInfo, 0)
+
+	for _, item := range this.Rooms {
+		pRoonInfo := this.createRoomInfo(item)
+		lstRoom = append(lstRoom, pRoonInfo)
 	}
 
-	log.Info("%p %s OnConnected", s, msg.OpenId)
-	return nil
-}
-
-func (this *RoomService) OnDisconnected(s *session.Session) {
-
+	return s.Response(thinkutils.AjaxResultSuccessWithData(lstRoom))
 }

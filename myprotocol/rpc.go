@@ -46,6 +46,9 @@ type JoinRoomReq struct {
 	RoomId int64 `json:"roomId"`
 }
 
+type EmptyReq struct {
+}
+
 func NewRoomInfo() *RoomInfo {
 	pRoom := &RoomInfo{
 		Members: []*User{},

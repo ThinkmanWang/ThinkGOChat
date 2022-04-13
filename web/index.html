@@ -11,8 +11,7 @@
     </ul>
     <div class="controls">
         昵称: <input type="text" v-model="nickname"> <br /><br />
-        <input type="text" v-model="inputMessage">
-        <input type="button" v-on:click="sendMessage" value="发送所有人">
+
 
         <br/><br/>
         房间名<input type="text" v-model="roomName">
@@ -20,12 +19,15 @@
 
         <br />
         房间ID
-        <select v-model="selectClassEnd" @change="selectClass($event)">
+        <select v-model="roomSelected" @change="onChangeRoom($event)">
             <option value="NONE">未选择</option>
-            <option v-for="(options,id) in selectClassData" :key="id" :value="options.id">
-                {{options.title}}
-            </option>
+            <option :value="item.id" v-for="item in lstRoom">{{item.name}}</option>
         </select>
+
+        <br /><br />
+        <input type="text" v-model="inputMessage">
+        <input type="button" v-on:click="sendMessage" value="发送所有人">
+        <input type="button" v-on:click="sendMessage" value="发送到房间">
     </div>
 </div>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js" type="text/javascript"></script>
@@ -41,6 +43,8 @@
             inputMessage:'',
             messages: [],
             roomName: '',
+            roomSelected:"0",
+            lstRoom: [],
         },
         methods: {
             sendMessage: function () {
@@ -48,9 +52,18 @@
                 starx.notify('WorldService.SendMessage', {name: this.nickname, content: this.inputMessage});
                 this.inputMessage = '';
             }
+            , sendRoomMessage: function () {
+                starx.notify('RoomService.SendMessage', {name: this.nickname, content: this.inputMessage});
+                this.inputMessage = '';
+            }
             , createRoom: function () {
                 starx.request("RoomService.CreateRoom", {name: this.roomName}, function (data) {
                     console.log(JSON.stringify(data))
+                })
+            }
+            , onChangeRoom: function () {
+                starx.request("RoomService.JoinRoom", {
+                    roomId: this.roomSelected
                 })
             }
         }
@@ -80,6 +93,10 @@
 
     var onCreateRoom = function (data) {
         console.log(JSON.stringify(data))
+        starx.request("RoomService.RoomList", null, function (data) {
+            console.log(JSON.stringify(data));
+            v.lstRoom = data.data;
+        })
     }
 
     // gate address
