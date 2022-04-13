@@ -66,14 +66,6 @@
         v.messages.push({name:'system', content:data.content});
     };
 
-    var onMembers = function (data) {
-        console.log(data);
-        for (var i = 0; i < data.members.length; ++i) {
-            v.messages.push({name:'system', content: "members: " + data.members[i].name});
-        }
-    };
-
-
     var login = function (data) {
         console.log(data);
         if(data.code === 0) {
@@ -88,7 +80,6 @@
     starx.init({host: gateHost, port: gatePort, path: '/nano'}, function () {
         console.log("initialized");
         starx.on("onNewUser", onNewUser);
-        starx.on("onMembers", onMembers);
         starx.request("GateService.Login", {"nickname": nickname}, login);
     })
 </script>

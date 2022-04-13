@@ -31,9 +31,9 @@ func (this *GateService) Login(s *session.Session, msg *LoginRequest) error {
 		OpenId: szOpenId,
 	}
 
-	if err := s.RPC("UserService.OnConnected", request); err != nil {
-		return errors.Trace(err)
-	}
+	//if err := s.RPC("UserService.OnConnected", request); err != nil {
+	//	return errors.Trace(err)
+	//}
 
 	if err := s.RPC("WorldService.OnConnected", request); err != nil {
 		return errors.Trace(err)

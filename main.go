@@ -4,10 +4,10 @@ import (
 	"ThinkGOChat/gateservice"
 	"ThinkGOChat/roomservice"
 	"ThinkGOChat/thinkutils/logger"
-	"ThinkGOChat/usercenter"
 	"ThinkGOChat/worldservice"
 	"fmt"
 	"github.com/lonng/nano"
+	"github.com/lonng/nano/component"
 	"github.com/lonng/nano/serialize/json"
 	"github.com/lonng/nano/session"
 	"github.com/urfave/cli"
@@ -19,9 +19,14 @@ import (
 
 var (
 	log *logger.LocalLogger = logger.DefaultLogger()
+	mainServices = &component.Components{}
 )
 
-func runRegisterCenter(args *cli.Context) error {
+//type MainService struct {
+//	component.Base
+//}
+
+func runMain(args *cli.Context) error {
 	log.Info("Run Register Center")
 
 	cfg, err := ini.Load("app.ini")
@@ -32,11 +37,9 @@ func runRegisterCenter(args *cli.Context) error {
 	szListen := fmt.Sprintf("127.0.0.1:%d", cfg.Section("register-center").Key("port").MustInt())
 	log.Info("Listen for %s", szListen)
 
-	session.Lifetime.OnClosed(usercenter.OnSessionClosed)
-
 	nano.Listen(szListen,
 		nano.WithMaster(),
-		nano.WithComponents(usercenter.Services),
+		nano.WithComponents(mainServices),
 		nano.WithSerializer(json.NewSerializer()),
 		nano.WithDebugMode(),
 	)
@@ -144,8 +147,8 @@ func main() {
 	app.Description = "China Best Chat Server"
 	app.Commands = []cli.Command{
 		{
-			Name: "register-center",
-			Action: runRegisterCenter,
+			Name: "main",
+			Action: runMain,
 		},
 		{
 			Name: "gate-server",
