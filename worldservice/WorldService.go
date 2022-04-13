@@ -27,12 +27,14 @@ func newWorldService() *WorldService {
 }
 
 type SendMessage struct {
+	OpenId string `json:"openId"`
 	Name    string `json:"name"`
 	Content string `json:"content"`
 }
 
 func (this *WorldService) SendMessage(s *session.Session, msg *SendMessage) error {
 	log.Info("%p %s call SendMessage", s, s.String("openId"))
+	msg.OpenId = s.String("openId")
 	return this.group.Broadcast("onMessage", msg)
 }
 
