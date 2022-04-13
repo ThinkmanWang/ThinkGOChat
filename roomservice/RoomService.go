@@ -13,6 +13,7 @@ type RoomService struct {
 	nextRoomId int64
 
 	Rooms map[int64]*Room
+	AllUser *nano.Group
 	//Rooms []*Room
 }
 
@@ -27,6 +28,7 @@ type Room struct {
 func newRoomService() *RoomService {
 	return &RoomService{
 		Rooms: map[int64]*Room{},
+		AllUser: nano.NewGroup("all-users"),
 	}
 }
 
@@ -51,12 +53,17 @@ func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRo
 
 	pRoonInfo := myprotocol.NewRoomInfo()
 	pRoonInfo.Id = rid
+	pRoonInfo.OwnerId = s.String("openId")
 	pRoonInfo.Name = msg.Name
 	pRoonInfo.Members = append(pRoonInfo.Members, &myprotocol.User{
 		OpenId: s.String("openId"),
 	})
 
-	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
+	_ = s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
+
+	_ = this.AllUser.Broadcast("onCreateRoom", pRoonInfo)
+
+	return nil
 }
 
 func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomReq) error {
@@ -83,6 +90,9 @@ func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomRe
 
 func (this *RoomService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
 	s.Set("openId", msg.OpenId)
+	if err := this.AllUser.Add(s); err != nil {
+	}
+
 	log.Info("%p %s OnConnected", s, msg.OpenId)
 	return nil
 }

@@ -37,6 +37,7 @@ type User struct {
 
 type RoomInfo struct {
 	Id int64 `json:"id"`
+	OwnerId string `json:"ownerId"`
 	Name string `json:"name"`
 	Members []*User `json:"members"`
 }
