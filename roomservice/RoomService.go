@@ -81,7 +81,7 @@ func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRo
 
 	_ = s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
 
-	_ = this.AllUser.Broadcast("onCreateRoom", pRoonInfo)
+	_ = this.AllUser.Broadcast(myprotocol.CLIENT_EVENT_ON_CREATE_ROOM, pRoonInfo)
 
 	return nil
 }
@@ -109,7 +109,7 @@ func (this *RoomService) LeaveRoom(s *session.Session, msg *myprotocol.EmptyReq)
 	_ = s.Response(thinkutils.AjaxResultSuccess())
 
 	pRoonInfo := this.createRoomInfo(this.Rooms[nRoomId])
-	return this.Rooms[nRoomId].Broadcast("OnRoomUpdate", pRoonInfo)
+	return this.Rooms[nRoomId].Broadcast(myprotocol.CLIENT_EVENT_ON_ROOM_UPDATE, pRoonInfo)
 }
 
 func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomReq) error {
@@ -134,6 +134,8 @@ func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomRe
 
 	s.Set(SESSION_KEY_ROOM_ID, this.Rooms[msg.RoomId].Id)
 	pRoonInfo := this.createRoomInfo(this.Rooms[msg.RoomId])
+
+	_ = this.Rooms[msg.RoomId].Broadcast(myprotocol.CLIENT_EVENT_ON_JOIN_ROOM, pRoonInfo)
 
 	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
 }
@@ -182,6 +184,6 @@ func (this *RoomService) MatchRoom(s *session.Session, msg *myprotocol.EmptyReq)
 func (this *RoomService) SendMessage(s *session.Session, msg *myprotocol.RoomMessage) error {
 	log.Info("%p %s call SendMessage", s, s.String(SESSION_KEY_OPEN_ID))
 	msg.OpenId = s.String(SESSION_KEY_OPEN_ID)
-	return this.Rooms[msg.RoomId].Broadcast("onMessage", msg)
+	return this.Rooms[msg.RoomId].Broadcast(myprotocol.CLIENT_EVENT_ON_CHAT_MESSAGE, msg)
 }
 

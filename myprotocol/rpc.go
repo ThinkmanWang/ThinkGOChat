@@ -63,3 +63,11 @@ type RoomMessage struct {
 	Name    string `json:"name"`
 	Content string `json:"content"`
 }
+
+const (
+	CLIENT_EVENT_ON_NEW_USER = "onNewUser"
+	CLIENT_EVENT_ON_JOIN_ROOM = "onJoinRoom"
+	CLIENT_EVENT_ON_CREATE_ROOM = "onCreateRoom"
+	CLIENT_EVENT_ON_ROOM_UPDATE = "onRoomUpdate"
+	CLIENT_EVENT_ON_CHAT_MESSAGE = "onChatMessage"
+)

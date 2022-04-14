@@ -69,7 +69,7 @@
         }
     });
 
-    var onMessage = function (msg) {
+    var onChatMessage = function (msg) {
         console.log(msg);
         v.messages.push(msg)
     };
@@ -83,7 +83,7 @@
         console.log(data);
         if(data.code === 0) {
             v.messages.push({name:'system', content:data.result});
-            starx.on('onMessage', onMessage)
+            starx.on('onChatMessage', onChatMessage)
         }
     };
 
@@ -111,7 +111,7 @@
         starx.on("onNewUser", onNewUser);
         starx.on("onJoinRoom", onJoinRoom);
         starx.on("onCreateRoom", onCreateRoom);
-        starx.on("OnRoomUpdate", onRoomUpdate);
+        starx.on("onRoomUpdate", onRoomUpdate);
         starx.request("GateService.Login", {"nickname": nickname}, login);
     })
 </script>

@@ -35,7 +35,7 @@ type SendMessage struct {
 func (this *WorldService) SendMessage(s *session.Session, msg *SendMessage) error {
 	log.Info("%p %s call SendMessage", s, s.String("openId"))
 	msg.OpenId = s.String("openId")
-	return this.group.Broadcast("onMessage", msg)
+	return this.group.Broadcast(myprotocol.CLIENT_EVENT_ON_CHAT_MESSAGE, msg)
 }
 
 func (this *WorldService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
@@ -48,7 +48,7 @@ func (this *WorldService) OnConnected(s *session.Session, msg *myprotocol.NewUse
 	broadcast := &myprotocol.NewUserBroadcast{
 		Content: fmt.Sprintf("User user join: %v", msg.Nickname),
 	}
-	if err := this.group.Broadcast("onNewUser", broadcast); err != nil {
+	if err := this.group.Broadcast(myprotocol.CLIENT_EVENT_ON_NEW_USER, broadcast); err != nil {
 	}
 
 	if err := this.group.Add(s); err != nil {
