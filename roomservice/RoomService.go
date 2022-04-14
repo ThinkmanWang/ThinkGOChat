@@ -98,10 +98,15 @@ func (this *RoomService) LeaveRoom(s *session.Session, msg *myprotocol.EmptyReq)
 
 	nRoomId := s.Int64(SESSION_KEY_ROOM_ID)
 
+	if this.Rooms[nRoomId].Owner == s && this.Rooms[nRoomId].Count() > 1 {
+		return s.Response(thinkutils.AjaxResultErrorWithMsg("owner cannot leave room"))
+	}
+
 	if err := this.Rooms[nRoomId].Leave(s); err != nil {
 		return err
 	}
 	s.Remove(SESSION_KEY_ROOM_ID)
+	_ = s.Response(thinkutils.AjaxResultSuccess())
 
 	pRoonInfo := this.createRoomInfo(this.Rooms[nRoomId])
 	return this.Rooms[nRoomId].Broadcast("OnRoomUpdate", pRoonInfo)
@@ -162,8 +167,21 @@ func (this *RoomService) RoomList(s *session.Session, msg *myprotocol.EmptyReq) 
 	return s.Response(thinkutils.AjaxResultSuccessWithData(lstRoom))
 }
 
+func (this *RoomService) DismissRoom(s *session.Session, msg *myprotocol.EmptyReq) error {
+	return nil
+}
+
+func (this *RoomService) ChangeRoom(s *session.Session, msg *myprotocol.EmptyReq) error {
+	return nil
+}
+
+func (this *RoomService) MatchRoom(s *session.Session, msg *myprotocol.EmptyReq) error {
+	return nil
+}
+
 func (this *RoomService) SendMessage(s *session.Session, msg *myprotocol.RoomMessage) error {
 	log.Info("%p %s call SendMessage", s, s.String(SESSION_KEY_OPEN_ID))
 	msg.OpenId = s.String(SESSION_KEY_OPEN_ID)
 	return this.Rooms[msg.RoomId].Broadcast("onMessage", msg)
 }
+
