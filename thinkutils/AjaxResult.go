@@ -21,3 +21,10 @@ func AjaxResultSuccessWithData(data interface{}) *AjaxResult {
 func AjaxResultError() *AjaxResult {
 	return &AjaxResult{Code: 500, Msg: "Server Error"}
 }
+
+func AjaxResultErrorWithMsg(msg string) *AjaxResult {
+	return &AjaxResult{
+		Code: 500,
+		Msg: msg,
+	}
+}

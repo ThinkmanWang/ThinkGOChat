@@ -31,8 +31,13 @@ func newRoomService() *RoomService {
 	}
 }
 
+var (
+	SESSION_KEY_OPEN_ID string = "openId"
+	SESSION_KEY_ROOM_ID string = "roomId"
+)
+
 func (this *RoomService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
-	s.Set("openId", msg.OpenId)
+	s.Set(SESSION_KEY_OPEN_ID, msg.OpenId)
 	if err := this.AllUser.Add(s); err != nil {
 	}
 
@@ -45,7 +50,10 @@ func (this *RoomService) OnDisconnected(s *session.Session) {
 }
 
 func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRoomReq) error {
-	log.Info("%s call CreateRoom", s.String("openId"))
+	log.Info("%s call CreateRoom", s.String(SESSION_KEY_OPEN_ID))
+
+	_ = this.LeaveRoom(s, nil)
+
 
 	this.nextRoomId++
 	rid := this.nextRoomId
@@ -65,10 +73,10 @@ func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRo
 
 	pRoonInfo := myprotocol.NewRoomInfo()
 	pRoonInfo.Id = rid
-	pRoonInfo.OwnerId = s.String("openId")
+	pRoonInfo.OwnerId = s.String(SESSION_KEY_OPEN_ID)
 	pRoonInfo.Name = msg.Name
 	pRoonInfo.Members = append(pRoonInfo.Members, &myprotocol.User{
-		OpenId: s.String("openId"),
+		OpenId: s.String(SESSION_KEY_OPEN_ID),
 	})
 
 	_ = s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
@@ -78,14 +86,48 @@ func (this *RoomService) CreateRoom(s *session.Session, msg *myprotocol.CreateRo
 	return nil
 }
 
-func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomReq) error {
-	log.Info("%s join room %d", s.String("openId"), msg.RoomId)
-	err := this.Rooms[msg.RoomId].Add(s)
-	if err != nil {
-		_ = s.Response(thinkutils.AjaxResultError())
+func (this *RoomService) LeaveRoom(s *session.Session, msg *myprotocol.EmptyReq) error {
+
+	if false == s.HasKey(SESSION_KEY_ROOM_ID) {
 		return nil
 	}
 
+	if s.Int64(SESSION_KEY_ROOM_ID) <= 0 {
+		return nil
+	}
+
+	nRoomId := s.Int64(SESSION_KEY_ROOM_ID)
+
+	if err := this.Rooms[nRoomId].Leave(s); err != nil {
+		return err
+	}
+	s.Remove(SESSION_KEY_ROOM_ID)
+
+	pRoonInfo := this.createRoomInfo(this.Rooms[nRoomId])
+	return this.Rooms[nRoomId].Broadcast("OnRoomUpdate", pRoonInfo)
+}
+
+func (this *RoomService) JoinRoom(s *session.Session, msg *myprotocol.JoinRoomReq) error {
+
+	if s.HasKey(SESSION_KEY_ROOM_ID) {
+		if err := this.LeaveRoom(s, nil); err != nil {
+			_ = s.Response(thinkutils.AjaxResultErrorWithMsg(err.Error()))
+			return err
+		}
+	}
+
+	log.Info("%s join room %d", s.String(SESSION_KEY_OPEN_ID), msg.RoomId)
+	err := this.Rooms[msg.RoomId].Add(s)
+
+	if err != nil {
+		if  nano.ErrSessionDuplication == err {
+		} else {
+			_ = s.Response(thinkutils.AjaxResultErrorWithMsg(err.Error()))
+			return nil
+		}
+	}
+
+	s.Set(SESSION_KEY_ROOM_ID, this.Rooms[msg.RoomId].Id)
 	pRoonInfo := this.createRoomInfo(this.Rooms[msg.RoomId])
 
 	return s.Response(thinkutils.AjaxResultSuccessWithData(pRoonInfo))
@@ -95,13 +137,13 @@ func (this *RoomService) createRoomInfo(pRoom *Room) *myprotocol.RoomInfo {
 	pRoonInfo := myprotocol.NewRoomInfo()
 	pRoonInfo.Id = pRoom.Id
 	pRoonInfo.Name = pRoom.Name
-	pRoonInfo.OwnerId = pRoom.Owner.String("openId")
+	pRoonInfo.OwnerId = pRoom.Owner.String(SESSION_KEY_OPEN_ID)
 
 	lstMember := pRoom.Members()
 	for i := 0; i < pRoom.Count(); i++ {
 		if session, err := pRoom.Member(lstMember[i]); err == nil {
 			pRoonInfo.Members = append(pRoonInfo.Members, &myprotocol.User{
-				OpenId: session.String("openId"),
+				OpenId: session.String(SESSION_KEY_OPEN_ID),
 			})
 		}
 	}
@@ -121,7 +163,7 @@ func (this *RoomService) RoomList(s *session.Session, msg *myprotocol.EmptyReq) 
 }
 
 func (this *RoomService) SendMessage(s *session.Session, msg *myprotocol.RoomMessage) error {
-	log.Info("%p %s call SendMessage", s, s.String("openId"))
-	msg.OpenId = s.String("openId")
+	log.Info("%p %s call SendMessage", s, s.String(SESSION_KEY_OPEN_ID))
+	msg.OpenId = s.String(SESSION_KEY_OPEN_ID)
 	return this.Rooms[msg.RoomId].Broadcast("onMessage", msg)
 }

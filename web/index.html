@@ -99,6 +99,10 @@
         })
     }
 
+    var onRoomUpdate = function (data) {
+
+    }
+
     // gate address
     var gateHost = "127.0.0.1";
     var gatePort = 8082;
@@ -107,6 +111,7 @@
         starx.on("onNewUser", onNewUser);
         starx.on("onJoinRoom", onJoinRoom);
         starx.on("onCreateRoom", onCreateRoom);
+        starx.on("OnRoomUpdate", onRoomUpdate);
         starx.request("GateService.Login", {"nickname": nickname}, login);
     })
 </script>
