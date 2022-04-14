@@ -3,6 +3,10 @@ cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 cloud.google.com/go v0.38.0/go.mod h1:990N+gfupTy94rShfmMCWGDn0LpTmnzTp2qbd1dvSRU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
+github.com/ThinkmanWang/GOThinkUtils v0.0.0-20220414064408-46aeda239c2e h1:8fNCm+r4D2lEvJQoA4HCpmInB+pT8Lpld1/9T/98dew=
+github.com/ThinkmanWang/GOThinkUtils v0.0.0-20220414064408-46aeda239c2e/go.mod h1:4OU73b+N+BpmTGLmLg8ngkXgedc6NCk0WZoTN6usIfY=
+github.com/ThinkmanWang/GOThinkUtils v0.0.0-20220414073508-3ece95f40997 h1:kz5QcT1ltlO57bjfZ1hVm70HiB+RglNoc0bMtPyq08M=
+github.com/ThinkmanWang/GOThinkUtils v0.0.0-20220414073508-3ece95f40997/go.mod h1:4OU73b+N+BpmTGLmLg8ngkXgedc6NCk0WZoTN6usIfY=
 github.com/ahmetb/go-linq/v3 v3.2.0 h1:BEuMfp+b59io8g5wYzNoFe9pWPalRklhlhbiU3hYZDE=
 github.com/ahmetb/go-linq/v3 v3.2.0/go.mod h1:haQ3JfOeWK8HpVxMtHHEMPVgBKiYyQ+f1/kLZh/cj9U=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=

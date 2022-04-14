@@ -2,7 +2,7 @@ package roomservice
 
 import (
 	"ThinkGOChat/myprotocol"
-	"ThinkGOChat/thinkutils"
+	"github.com/ThinkmanWang/GOThinkUtils/thinkutils"
 	"github.com/lonng/nano"
 	"github.com/lonng/nano/component"
 	"github.com/lonng/nano/session"

@@ -2,7 +2,8 @@ package gateservice
 
 import (
 	"ThinkGOChat/myprotocol"
-	"ThinkGOChat/thinkutils"
+	"github.com/ThinkmanWang/GOThinkUtils/thinkutils"
+
 	"github.com/lonng/nano/component"
 	"github.com/lonng/nano/session"
 	"github.com/pingcap/errors"

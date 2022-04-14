@@ -1,7 +1,7 @@
 package gateservice
 
 import (
-	"ThinkGOChat/thinkutils/logger"
+	"github.com/ThinkmanWang/GOThinkUtils/thinkutils/logger"
 	"github.com/lonng/nano/component"
 	"github.com/lonng/nano/session"
 )

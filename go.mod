@@ -19,6 +19,10 @@ require (
 	github.com/segmentio/kafka-go v0.4.31
 	github.com/urfave/cli v1.22.5
 	gopkg.in/ini.v1 v1.66.2
+)
+
+require (
+	github.com/ThinkmanWang/GOThinkUtils v0.0.0-20220414073508-3ece95f40997 // indirect
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect

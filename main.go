@@ -3,7 +3,7 @@ package main
 import (
 	"ThinkGOChat/gateservice"
 	"ThinkGOChat/roomservice"
-	"ThinkGOChat/thinkutils/logger"
+	"github.com/ThinkmanWang/GOThinkUtils/thinkutils/logger"
 	"ThinkGOChat/worldservice"
 	"fmt"
 	"github.com/lonng/nano"
