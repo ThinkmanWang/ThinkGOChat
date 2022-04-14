@@ -49,13 +49,15 @@ func (this *GateService) Login(s *session.Session, msg *LoginRequest) error {
 	//	return errors.Trace(err)
 	//}
 
-	if err := s.RPC("WorldService.OnConnected", request); err != nil {
-		return errors.Trace(err)
-	}
+	go func() {
+		if err := s.RPC("WorldService.OnConnected", request); err != nil {
+			return
+		}
 
-	if err := s.RPC("RoomService.OnConnected", request); err != nil {
-		return errors.Trace(err)
-	}
+		if err := s.RPC("RoomService.OnConnected", request); err != nil {
+			return
+		}
+	}()
 
 	return s.Response(thinkutils.AjaxResultSuccess())
 }
