@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"time"
 )
 
 var (
@@ -75,6 +76,7 @@ func runGate(args *cli.Context) error {
 		nano.WithWSPath("/nano"),
 		nano.WithCheckOriginFunc(func(_ *http.Request) bool { return true }),
 		nano.WithDebugMode(),
+		nano.WithHeartbeatInterval(10 * time.Second),
 	)
 
 	return nil
