@@ -3,7 +3,6 @@ package gateservice
 import (
 	"ThinkGOChat/myprotocol"
 	"github.com/ThinkmanWang/GOThinkUtils/thinkutils"
-
 	"github.com/lonng/nano/component"
 	"github.com/lonng/nano/session"
 	"github.com/pingcap/errors"
@@ -22,6 +21,20 @@ type (
 		Nickname string `json:"nickname"`
 	}
 )
+
+var (
+	// All services in master server
+	Services = &component.Components{}
+	gateService = newGateService()
+)
+
+func init() {
+	Services.Register(gateService)
+}
+
+func OnSessionClosed(s *session.Session) {
+	gateService.OnDisconnected(s)
+}
 
 func (this *GateService) Login(s *session.Session, msg *LoginRequest) error {
 	log.Info(thinkutils.JSONUtils.ToJson(msg))

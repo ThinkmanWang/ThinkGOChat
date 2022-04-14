@@ -19,6 +19,21 @@ type WorldService struct {
 	Users map[string]*User
 }
 
+var (
+	// All services in master server
+	Services = &component.Components{}
+
+	worldService = newWorldService()
+)
+
+func init() {
+	Services.Register(worldService)
+}
+
+func OnSessionClosed(s *session.Session) {
+	worldService.OnDisconnected(s)
+}
+
 func newWorldService() *WorldService {
 	return &WorldService{
 		group: nano.NewGroup("all-users"),

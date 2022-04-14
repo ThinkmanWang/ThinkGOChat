@@ -34,7 +34,19 @@ func newRoomService() *RoomService {
 var (
 	SESSION_KEY_OPEN_ID string = "openId"
 	SESSION_KEY_ROOM_ID string = "roomId"
+
+	// All services in master server
+	Services = &component.Components{}
+	roomService = newRoomService()
 )
+
+func init() {
+	Services.Register(roomService)
+}
+
+func OnSessionClosed(s *session.Session) {
+	roomService.OnDisconnected(s)
+}
 
 func (this *RoomService) OnConnected(s *session.Session, msg *myprotocol.NewUserRequest) error {
 	s.Set(SESSION_KEY_OPEN_ID, msg.OpenId)
